@@ -174,8 +174,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("CanViewReports", policy => policy.RequireClaim("permission", "view-reports"));
 });
 
-// Configure OpenAPI/Swagger
-builder.Services.AddOpenApi();
+// Configure Swagger/OpenAPI for .NET 8
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // Add CORS for development
 builder.Services.AddCors(options =>
@@ -193,10 +194,10 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/openapi/v1.json", "Fabrikam API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fabrikam API v1");
         c.RoutePrefix = "swagger"; // Serve Swagger UI at /swagger
         c.DocumentTitle = "Fabrikam API Documentation";
         c.DefaultModelsExpandDepth(-1); // Hide models section by default
