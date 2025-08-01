@@ -101,7 +101,7 @@ jobs:
                 sed -i 's|dotnet build --configuration Release$|dotnet build FabrikamApi/src/FabrikamApi.csproj --configuration Release|g' "$workflow_file"
                 
                 # Fix publish command  
-                sed -i 's|dotnet publish -c Release -o \${{env\.DOTNET_ROOT}}/myapp|dotnet publish FabrikamApi/src/FabrikamApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp|g' "$workflow_file"
+                sed -i 's|dotnet publish -c Release -o ${{env\.DOTNET_ROOT}}/myapp|dotnet publish FabrikamApi/src/FabrikamApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp|g' "$workflow_file"
                 
                 # Fix hardcoded app name to use repository variable
                 sed -i "s|app-name: 'fabrikam-api-dev-[a-zA-Z0-9]*'|app-name: \${{ vars.AZURE_API_APP_NAME \|\| 'fabrikam-api-dev' }}|g" "$workflow_file"
@@ -118,7 +118,7 @@ jobs:
                 sed -i 's|dotnet build --configuration Release$|dotnet build FabrikamMcp/src/FabrikamMcp.csproj --configuration Release|g' "$workflow_file"
                 
                 # Fix publish command
-                sed -i 's|dotnet publish -c Release -o \${{env\.DOTNET_ROOT}}/myapp|dotnet publish FabrikamMcp/src/FabrikamMcp.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp|g' "$workflow_file"
+                sed -i 's|dotnet publish -c Release -o ${{env\.DOTNET_ROOT}}/myapp|dotnet publish FabrikamMcp/src/FabrikamMcp.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp|g' "$workflow_file"
                 
                 # Fix hardcoded app name to use repository variable
                 sed -i "s|app-name: 'fabrikam-mcp-dev-[a-zA-Z0-9]*'|app-name: \${{ vars.AZURE_MCP_APP_NAME \|\| 'fabrikam-mcp-dev' }}|g" "$workflow_file"
