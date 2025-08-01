@@ -86,7 +86,7 @@ jobs:
             fi
             
             # Check for hardcoded secrets with random IDs
-            if grep -q "AZUREAPPSERVICE_.*_[A-F0-9]\{32\}" "$workflow_file"; then
+            if grep -q "AZUREAPPSERVICE_.*_[A-F0-9]{32}" "$workflow_file"; then
               NEEDS_FIX=true
             fi
             
@@ -101,15 +101,15 @@ jobs:
                 sed -i 's|dotnet build --configuration Release$|dotnet build FabrikamApi/src/FabrikamApi.csproj --configuration Release|g' "$workflow_file"
                 
                 # Fix publish command  
-                sed -i 's|dotnet publish -c Release -o ${{env\.DOTNET_ROOT}}/myapp|dotnet publish FabrikamApi/src/FabrikamApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp|g' "$workflow_file"
+                sed -i 's|dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp|dotnet publish FabrikamApi/src/FabrikamApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp|g' "$workflow_file"
                 
                 # Fix hardcoded app name to use repository variable
-                sed -i "s|app-name: 'fabrikam-api-dev-[a-zA-Z0-9]*'|app-name: \${{ vars.AZURE_API_APP_NAME \|\| 'fabrikam-api-dev' }}|g" "$workflow_file"
+                sed -i "s|app-name: 'fabrikam-api-dev-[a-zA-Z0-9]*'|app-name: ${{ vars.AZURE_API_APP_NAME || 'fabrikam-api-dev' }}|g" "$workflow_file"
                 
                 # Fix hardcoded secrets to use flexible authentication
-                sed -i 's|client-id: \${{ secrets\.AZUREAPPSERVICE_CLIENTID_[A-F0-9]\{32\} }}|client-id: \${{ secrets.AZURE_CLIENT_ID \|\| secrets.AZUREAPPSERVICE_CLIENTID }}|g' "$workflow_file"
-                sed -i 's|tenant-id: \${{ secrets\.AZUREAPPSERVICE_TENANTID_[A-F0-9]\{32\} }}|tenant-id: \${{ secrets.AZURE_TENANT_ID \|\| secrets.AZUREAPPSERVICE_TENANTID }}|g' "$workflow_file"
-                sed -i 's|subscription-id: \${{ secrets\.AZUREAPPSERVICE_SUBSCRIPTIONID_[A-F0-9]\{32\} }}|subscription-id: \${{ secrets.AZURE_SUBSCRIPTION_ID \|\| secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}|g' "$workflow_file"
+                sed -i 's|client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_[A-F0-9]{32} }}|client-id: ${{ secrets.AZURE_CLIENT_ID || secrets.AZUREAPPSERVICE_CLIENTID }}|g' "$workflow_file"
+                sed -i 's|tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_[A-F0-9]{32} }}|tenant-id: ${{ secrets.AZURE_TENANT_ID || secrets.AZUREAPPSERVICE_TENANTID }}|g' "$workflow_file"
+                sed -i 's|subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_[A-F0-9]{32} }}|subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID || secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}|g' "$workflow_file"
                 
               elif [[ $(basename "$workflow_file") == *"mcp"* ]]; then
                 echo "  🔧 Fixing MCP workflow..."
@@ -118,15 +118,15 @@ jobs:
                 sed -i 's|dotnet build --configuration Release$|dotnet build FabrikamMcp/src/FabrikamMcp.csproj --configuration Release|g' "$workflow_file"
                 
                 # Fix publish command
-                sed -i 's|dotnet publish -c Release -o ${{env\.DOTNET_ROOT}}/myapp|dotnet publish FabrikamMcp/src/FabrikamMcp.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp|g' "$workflow_file"
+                sed -i 's|dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp|dotnet publish FabrikamMcp/src/FabrikamMcp.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp|g' "$workflow_file"
                 
                 # Fix hardcoded app name to use repository variable
-                sed -i "s|app-name: 'fabrikam-mcp-dev-[a-zA-Z0-9]*'|app-name: \${{ vars.AZURE_MCP_APP_NAME \|\| 'fabrikam-mcp-dev' }}|g" "$workflow_file"
+                sed -i "s|app-name: 'fabrikam-mcp-dev-[a-zA-Z0-9]*'|app-name: ${{ vars.AZURE_MCP_APP_NAME || 'fabrikam-mcp-dev' }}|g" "$workflow_file"
                 
                 # Fix hardcoded secrets to use flexible authentication
-                sed -i 's|client-id: \${{ secrets\.AZUREAPPSERVICE_CLIENTID_[A-F0-9]\{32\} }}|client-id: \${{ secrets.AZURE_CLIENT_ID \|\| secrets.AZUREAPPSERVICE_CLIENTID }}|g' "$workflow_file"
-                sed -i 's|tenant-id: \${{ secrets\.AZUREAPPSERVICE_TENANTID_[A-F0-9]\{32\} }}|tenant-id: \${{ secrets.AZURE_TENANT_ID \|\| secrets.AZUREAPPSERVICE_TENANTID }}|g' "$workflow_file"
-                sed -i 's|subscription-id: \${{ secrets\.AZUREAPPSERVICE_SUBSCRIPTIONID_[A-F0-9]\{32\} }}|subscription-id: \${{ secrets.AZURE_SUBSCRIPTION_ID \|\| secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}|g' "$workflow_file"
+                sed -i 's|client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_[A-F0-9]{32} }}|client-id: ${{ secrets.AZURE_CLIENT_ID || secrets.AZUREAPPSERVICE_CLIENTID }}|g' "$workflow_file"
+                sed -i 's|tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_[A-F0-9]{32} }}|tenant-id: ${{ secrets.AZURE_TENANT_ID || secrets.AZUREAPPSERVICE_TENANTID }}|g' "$workflow_file"
+                sed -i 's|subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_[A-F0-9]{32} }}|subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID || secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}|g' "$workflow_file"
                 
               else
                 echo "  ⚠️ Unknown workflow type for $workflow_file"
